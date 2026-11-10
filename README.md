@@ -28,7 +28,7 @@ balanced way and on each host, manages the life-cycle of the individual instance
 
 roost is one example of such a solution. It comes in two pieces:
 
-- **agent** (`roost-agent`): runs on every host. It starts and stops *units*
+- **agent** (`roost.agent`): runs on every host. It starts and stops *units*
   (one controller process tree per robot) on request, over a small HTTP API.
 - **manager** (`roost.manager`): a library for your coordinator process. It
   knows the hosts and their capacity, places each unit on the least-loaded
@@ -45,7 +45,7 @@ can launch (`examples/ros2/`).
 ```
    coordinator process                     host A                  host B
  +----------------------+   HTTP +   +----------------+     +----------------+
- | your code            |   bearer   | roost-agent    |     | roost-agent    |
+ | your code            |   bearer   | roost.agent    |     | roost.agent    |
  |   Fleet.deploy()     |   token    |  units.yaml    |     |  units.yaml    |
  |   Fleet.remove()  ---+----------->|   |- unit r1   |     |   |- unit r2   |
  |   Fleet.sync()       |            |   '- unit r3   |     |   '- unit r4   |

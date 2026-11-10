@@ -20,13 +20,13 @@ in real-world situations.
 In scenarios where one wants to deploy a large number of such robots or edge
 devices, the next step is to consider distributing their controllers over
 multiple host devices, balancing the number of connections to within the acceptable
-range. If its a one time deployment, it is possible to do it manually with
+range. If it's a one-time deployment, it is possible to do it manually with
 handwritten scripts. However, for any meaningful scalable solution, this needs
 to be managed automatically. There is a need for a solution that manages the
 multiple host devices, distributes the robot controllers across the fleet in a
 balanced way and on each host, manages the life-cycle of the individual instances.
 
-Roost is one example of such a solution. It comes in two pieces:
+roost is one example of such a solution. It comes in two pieces:
 
 - **agent** (`roost-agent`): runs on every host. It starts and stops *units*
   (one controller process tree per robot) on request, over a small HTTP API.

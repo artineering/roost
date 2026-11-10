@@ -1,0 +1,25 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "roost"
+version = "0.1.0"
+description = "Run controllers for robots that cannot host their own, across a fleet of host machines."
+readme = "README.md"
+license = {text = "MIT"}
+authors = [{name = "Siddharth Vaghela"}]
+requires-python = ">=3.9"
+dependencies = ["flask>=2.0", "pyyaml", "requests"]
+
+[project.optional-dependencies]
+test = ["pytest"]
+
+[project.scripts]
+roost-agent = "roost.agent.__main__:main"
+
+[tool.setuptools.packages.find]
+include = ["roost*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

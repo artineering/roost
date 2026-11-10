@@ -161,14 +161,15 @@ service.
 
 ## Fitting your constraints
 
-roost does not measure anything on a host. You tell it what each host can
-take, using three settings:
+A unit is the atomic thing you deploy: one controller for one device. What a
+unit needs from a host depends entirely on your setup, so roost does not
+measure anything. You work out how many units each host can carry and tell
+it, using three settings:
 
 - **`capacity`** (hosts file): how many units the host runs at once. Set it to
   the count of whatever runs out first there: 4 on a board whose radio holds
   four links, 2 on a machine with two free serial ports, 30 on a server that
-  is only limited by CPU. Each unit takes one slot, and a full host is
-  refused rather than overloaded.
+  is only limited by CPU. A full host is refused rather than overloaded.
 - **`types`** (hosts file): which unit types may be placed on the host, so
   units that need a GPU or a particular adapter only land where one exists.
 - **unit types** (each host's own agent config): the same type name can map to

@@ -1,0 +1,15 @@
+# Agent config for a ROS 2 host: each unit is one micro-ROS agent bridging a
+# microcontroller robot on a serial port into the ROS 2 graph.
+#
+# The DDS settings (ROS_DOMAIN_ID, RMW_IMPLEMENTATION, CYCLONEDDS_URI) are set
+# once per host in the agent's own environment -- see
+# systemd/roost-agent.service -- and every unit inherits them.
+units:
+  rover:
+    command: [ros2, run, micro_ros_agent, micro_ros_agent,
+              serial, --dev, "{device}", -b, "{baudrate}"]
+    params:
+      device: {type: str, required: true}          # e.g. /dev/ttyACM0
+      baudrate: {type: int, default: 115200}
+    startup_grace_s: 2
+    term_timeout_s: 10        # time to shut down cleanly and release the port

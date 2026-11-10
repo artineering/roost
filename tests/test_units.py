@@ -4,7 +4,7 @@ import pytest
 
 from roost.agent.units import UnitType, load_unit_types
 
-SPHERO = {
+ROBOT = {
     'command': ['run', '{name}', '{port}', '{external_localization}',
                 '--rate={rate}'],
     'params': {
@@ -18,14 +18,14 @@ SPHERO = {
 
 
 def test_render_substitutes_name_params_and_defaults():
-    unit_type = UnitType.from_config('sphero', SPHERO)
-    argv, env = unit_type.render('SB-1234', {'port': 5001})
-    assert argv == ['run', 'SB-1234', '5001', 'false', '--rate=1.5']
-    assert env == {'UNIT': 'SB-1234-5001', 'STATIC': 'yes'}
+    unit_type = UnitType.from_config('robot', ROBOT)
+    argv, env = unit_type.render('robot-1', {'port': 5001})
+    assert argv == ['run', 'robot-1', '5001', 'false', '--rate=1.5']
+    assert env == {'UNIT': 'robot-1-5001', 'STATIC': 'yes'}
 
     argv, _ = unit_type.render(
-        'SB-1234', {'port': 5001, 'external_localization': True, 'rate': 2})
-    assert argv == ['run', 'SB-1234', '5001', 'true', '--rate=2']
+        'robot-1', {'port': 5001, 'external_localization': True, 'rate': 2})
+    assert argv == ['run', 'robot-1', '5001', 'true', '--rate=2']
 
 
 @pytest.mark.parametrize('params, message', [
@@ -38,9 +38,9 @@ def test_render_substitutes_name_params_and_defaults():
     ({'port': 1, 'bogus': 1}, 'unknown params'),
 ])
 def test_render_rejects_bad_params(params, message):
-    unit_type = UnitType.from_config('sphero', SPHERO)
+    unit_type = UnitType.from_config('robot', ROBOT)
     with pytest.raises(ValueError, match=message):
-        unit_type.render('SB-1234', params)
+        unit_type.render('robot-1', params)
 
 
 @pytest.mark.parametrize('name', [
@@ -48,7 +48,7 @@ def test_render_rejects_bad_params(params, message):
     None, 5,
 ])
 def test_render_rejects_unsafe_names(name):
-    unit_type = UnitType.from_config('sphero', SPHERO)
+    unit_type = UnitType.from_config('robot', ROBOT)
     with pytest.raises(ValueError, match='invalid unit name'):
         unit_type.render(name, {'port': 1})
 

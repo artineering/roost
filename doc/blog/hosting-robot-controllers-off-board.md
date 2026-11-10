@@ -320,8 +320,8 @@ python examples/minimal/demo.py
 ```
 
 That runs two agents on your laptop and deploys stand-in controllers across them
-until it runs out of slots — no robots or ROS needed. `examples/sphero/` has the
-configuration that reproduces my lab setup.
+until it runs out of slots — no robots or ROS needed. `examples/ros2/` has a
+configuration for ROS 2 hosts.
 
 If your robot is too small to carry its own brain, the question is not really
 "where do I run the controller" — any Linux box will do. It is "who starts it, who

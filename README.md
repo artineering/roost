@@ -3,7 +3,7 @@
 Run the controllers for robots that cannot host their own, across a fleet of
 host machines.
 
-Plenty of small robots have no computer to speak of: BLE toys like Sphero,
+Plenty of small robots have no computer to speak of: BLE toys,
 micro-ROS microcontrollers, anything driven over a radio link. Their
 controller has to run somewhere else, and one machine is rarely enough. A
 Raspberry Pi holds only a handful of BLE links reliably, so twenty robots need
@@ -19,8 +19,7 @@ roost is that something, in two small pieces:
   host, and rolls back when something fails.
 
 It is framework-agnostic. A unit is any command; ROS 2 is just one thing it
-can launch. roost was extracted from a multi-robot Sphero system
-(`examples/sphero/`).
+can launch (`examples/ros2/`).
 
 ```
    coordinator process                     host A                  host B
@@ -90,13 +89,12 @@ command line.
 
 ```yaml
 units:
-  sphero:
-    command: [ros2, run, sphero_instance_controller,
-              sphero_instance_websocket_server.py,
-              "{name}", "{port}", "{external_localization}"]
+  rover:
+    command: [ros2, run, micro_ros_agent, micro_ros_agent,
+              serial, --dev, "{device}", -b, "{baudrate}"]
     params:
-      port: {type: int, required: true}
-      external_localization: {type: bool, default: false}
+      device: {type: str, required: true}
+      baudrate: {type: int, default: 115200}
     env: {ROBOT_NAME: "{name}"}
     startup_grace_s: 2
     term_timeout_s: 10
@@ -138,19 +136,19 @@ are JSON; errors look like `{"error": "..."}`.
 | Method & path          | Success | Errors |
 |------------------------|---------|--------|
 | `GET /health`          | 200 `{"status": "ok"}` | |
-| `GET /types`           | 200 `{"types": {"sphero": {"params": {...}}}}` | |
+| `GET /types`           | 200 `{"types": {"rover": {"params": {...}}}}` | |
 | `GET /units`           | 200 `{"units": [unit, ...]}` | |
 | `POST /units`          | 201 `{"unit": unit}` | 400 invalid name/params, 404 unknown type, 409 name already running, 500 failed to start (adds `"log_path"`) |
 | `DELETE /units/<name>` | 200 `{"stopped": "<name>"}` | 404 no such unit |
 
-`POST /units` takes `{"type": "sphero", "name": "SB-1234", "params": {"port": 5001}}`
+`POST /units` takes `{"type": "rover", "name": "rover-07", "params": {"device": "/dev/ttyACM0"}}`
 and answers after `startup_grace_s`. `DELETE` answers once the unit is gone.
 A `unit` is:
 
 ```json
-{"name": "SB-1234", "type": "sphero", "params": {"port": 5001},
+{"name": "rover-07", "type": "rover", "params": {"device": "/dev/ttyACM0"},
  "pid": 4242, "alive": true, "started_at": 1790000000.0,
- "log_path": "/var/log/roost/SB-1234.log"}
+ "log_path": "/var/log/roost/rover-07.log"}
 ```
 
 `systemd/roost-agent.service` is a template for running the agent as a
@@ -165,11 +163,11 @@ agent:
   token: ""          # prefer the ROOST_TOKEN environment variable (it wins)
 
 hosts:
-  - name: rpi4-node01      # unique
+  - name: host-01      # unique
     host: 10.0.0.11        # agent address
     port: 8181             # default 8181
     capacity: 4            # slots: max simultaneous units (required)
-    types: [sphero]        # optional: only place these unit types here
+    types: [rover]         # optional: only place these unit types here
     online: false          # optional: take the host out of placement
 ```
 

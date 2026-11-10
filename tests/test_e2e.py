@@ -157,7 +157,7 @@ def test_wrong_token_is_a_rejection_not_a_failover(start_agent):
     assert fleet.registry.get('a').online is True
 
 
-# --- the real `roost-agent` process ----------------------------------------
+# --- the real `roost.agent` process ----------------------------------------
 
 def run_agent(tmp_path, port, token=TOKEN):
     config = tmp_path / 'units.yaml'

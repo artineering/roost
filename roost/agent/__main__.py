@@ -1,4 +1,4 @@
-"""`roost-agent`: run the per-host agent."""
+"""`python -m roost.agent`: run the per-host agent."""
 
 import argparse
 import os
@@ -17,7 +17,7 @@ from roost.agent.units import load_unit_types
 def main(argv=None) -> int:
     env = os.environ
     parser = argparse.ArgumentParser(
-        prog='roost-agent',
+        prog='python -m roost.agent',
         description='Launch declared unit types on this host on behalf of an '
                     'roost manager. The bearer token is read from '
                     'ROOST_TOKEN.')
@@ -44,7 +44,7 @@ def main(argv=None) -> int:
     # Bind here, in the main thread, so a port clash fails loudly at startup.
     server = make_server(args.host, args.port,
                          create_app(supervisor, token), threaded=True)
-    print(f'roost-agent listening on {args.host}:{server.server_port}; '
+    print(f'roost.agent listening on {args.host}:{server.server_port}; '
           f'unit types: {sorted(supervisor.unit_types)}; '
           f'logs: {args.log_dir}', flush=True)
 
@@ -60,7 +60,7 @@ def main(argv=None) -> int:
     try:
         stop.wait()
     finally:
-        print('roost-agent stopping; tearing down all units', flush=True)
+        print('roost.agent stopping; tearing down all units', flush=True)
         supervisor.teardown_all()
     return 0
 

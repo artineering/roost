@@ -71,8 +71,8 @@ By hand, the same thing looks like this:
 ```bash
 export ROOST_TOKEN=$(python -c 'import secrets; print(secrets.token_hex(16))')
 cd examples/minimal
-roost-agent --config units.yaml --port 18181 &
-roost-agent --config units.yaml --port 18182 &
+python -m roost.agent --config units.yaml --port 18181 &
+python -m roost.agent --config units.yaml --port 18182 &
 ```
 
 ```python
@@ -88,7 +88,7 @@ fleet.remove('robot-1')
 ## Agent
 
 ```
-roost-agent [--config units.yaml] [--host 127.0.0.1] [--port 8181] [--log-dir DIR]
+python -m roost.agent [--config units.yaml] [--host 127.0.0.1] [--port 8181] [--log-dir DIR]
 ```
 
 | Setting   | Flag        | Environment      | Default            |

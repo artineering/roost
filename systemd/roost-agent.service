@@ -31,9 +31,9 @@ EnvironmentFile=/etc/roost/agent.env
 # Creates /var/log/roost, owned by <RUN_USER>.
 LogsDirectory=roost
 
-ExecStart=<VENV>/bin/roost-agent
+ExecStart=<VENV>/bin/python -m roost.agent
 # If the unit commands need a sourced environment (e.g. `ros2 run ...`):
-#ExecStart=/bin/bash -c 'source /opt/ros/<DISTRO>/setup.bash && source <WORKSPACE>/install/setup.bash && exec <VENV>/bin/roost-agent'
+#ExecStart=/bin/bash -c 'source /opt/ros/<DISTRO>/setup.bash && source <WORKSPACE>/install/setup.bash && exec <VENV>/bin/python -m roost.agent'
 
 Restart=on-failure
 RestartSec=3

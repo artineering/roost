@@ -3,14 +3,30 @@
 Run the controllers for robots that cannot host their own, across a fleet of
 host machines.
 
-Plenty of robots and edge devices have no computer to speak of. Their
-controller has to run somewhere else, and one machine is rarely enough: every
-host runs out of *something* first. It might be radio links, serial or USB
-ports, a GPU, memory, or simply how many control loops fit on its cores. So a
-fleet needs several hosts, and something has to decide which controller runs
-where, start it there, and stop it cleanly so the device is released.
+Plenty of robots and edge devices have no computer to speak of. They have limited
+memory and processing power. Deploying a higher-level controller on such devices
+is out of the question. In such cases, the obvious choice is to deploy the high-level
+controller on a host device like a Raspberry Pi or Jetson Nano that provides an
+operating system, more processing power and RAM. This also allows one to build
+controllers that work in the ROS environment. The robot and the controller share
+a fixed interface through communication channels such as Bluetooth, wifi, etc.
+This works very well for a single instance. However, as soon as we start deploying
+more instances on the host, resource constraints start becoming a real problem.
+For example, most host devices have Bluetooth adapters that can manage up to 7
+device connections simultaneously. This is often a theoretical limit. In reality,
+most adapters start showing degradation in their performance at 3 or 4 devices,
+in real-world situations.
 
-roost is that something, in two small pieces:
+In scenarios where one wants to deploy a large number of such robots or edge
+devices, the next step is to consider distributing their controllers over
+multiple host devices, balancing the number of connections to within the acceptable
+range. If its a one time deployment, it is possible to do it manually with
+handwritten scripts. However, for any meaningful scalable solution, this needs
+to be managed automatically. There is a need for a solution that manages the
+multiple host devices, distributes the robot controllers across the fleet in a
+balanced way and on each host, manages the life-cycle of the individual instances.
+
+Roost is one example of such a solution. It comes in two pieces:
 
 - **agent** (`roost-agent`): runs on every host. It starts and stops *units*
   (one controller process tree per robot) on request, over a small HTTP API.

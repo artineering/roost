@@ -1,6 +1,6 @@
-# Manager config: four hosts, four robots each. Capacity counts whatever runs
-# out first on a host (serial ports, radio links, ...). Replace the
-# placeholder addresses.
+# Manager config: four hosts with different limits. Set each capacity to the
+# count of whatever runs out first on that host (here, free serial ports).
+# Replace the placeholder addresses.
 #
 # Do not commit a real token. Leave it out and export ROOST_TOKEN instead.
 agent:
@@ -9,5 +9,5 @@ agent:
 hosts:
   - {name: host-01, host: 10.0.0.11, port: 8181, capacity: 4}
   - {name: host-02, host: 10.0.0.12, port: 8181, capacity: 4}
-  - {name: host-03, host: 10.0.0.13, port: 8181, capacity: 4}
-  - {name: host-04, host: 10.0.0.14, port: 8181, capacity: 4}
+  - {name: host-03, host: 10.0.0.13, port: 8181, capacity: 2}
+  - {name: host-04, host: 10.0.0.14, port: 8181, capacity: 8}

@@ -184,6 +184,12 @@ When I read the working system back, almost none of it was about Spheros:
 The Sphero knowledge was one hard-coded command line. So the generalization is
 mostly a matter of moving that line into configuration — carefully.
 
+Nothing in it is about Raspberry Pis or Bluetooth either. `roost` runs on any
+Linux host, and a fleet can mix them: you give each host a capacity that counts
+whatever *it* runs out of first, and say which kinds of controller it may run.
+A board with a four-link radio, a box with two free serial ports and a GPU
+server can sit in the same hosts file, each with its own limits.
+
 ### Unit types: the host declares what it can run
 
 In `roost`, each host has a config file that declares named **unit types**: a

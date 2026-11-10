@@ -12,7 +12,7 @@
 Description=roost agent (launches robot controllers on this host)
 After=network-online.target
 Wants=network-online.target
-# For BLE robots also add:  After=bluetooth.target
+# If units need a device service, order after it, e.g.  After=bluetooth.target
 
 [Service]
 Type=simple

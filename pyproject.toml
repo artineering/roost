@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "roost"
 version = "0.1.0"
-description = "Run controllers for robots that cannot host their own, across a fleet of host machines."
+description = "Run controllers for devices that cannot host their own, across a fleet of Linux hosts with different resource limits."
 readme = "README.md"
 license = {text = "MIT"}
 authors = [{name = "Siddharth Vaghela"}]

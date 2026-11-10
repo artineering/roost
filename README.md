@@ -3,12 +3,12 @@
 Run the controllers for robots that cannot host their own, across a fleet of
 host machines.
 
-Plenty of small robots have no computer to speak of: BLE toys,
-micro-ROS microcontrollers, anything driven over a radio link. Their
-controller has to run somewhere else, and one machine is rarely enough. A
-Raspberry Pi holds only a handful of BLE links reliably, so twenty robots need
-several hosts, and something has to decide which controller runs where, start
-it there, and stop it cleanly so the robot is released.
+Plenty of robots and edge devices have no computer to speak of. Their
+controller has to run somewhere else, and one machine is rarely enough: every
+host runs out of *something* first. It might be radio links, serial or USB
+ports, a GPU, memory, or simply how many control loops fit on its cores. So a
+fleet needs several hosts, and something has to decide which controller runs
+where, start it there, and stop it cleanly so the device is released.
 
 roost is that something, in two small pieces:
 
@@ -17,6 +17,11 @@ roost is that something, in two small pieces:
 - **manager** (`roost.manager`): a library for your coordinator process. It
   knows the hosts and their capacity, places each unit on the least-loaded
   host, and rolls back when something fails.
+
+roost runs on any Linux host, from a single-board computer to a server, and
+hosts in one fleet do not have to match. You describe each host's limits and
+what it may run; roost keeps deployments inside them (see
+[Fitting your constraints](#fitting-your-constraints)).
 
 It is framework-agnostic. A unit is any command; ROS 2 is just one thing it
 can launch (`examples/ros2/`).
@@ -29,7 +34,7 @@ can launch (`examples/ros2/`).
  |   Fleet.remove()  ---+----------->|   |- unit r1   |     |   |- unit r2   |
  |   Fleet.sync()       |            |   '- unit r3   |     |   '- unit r4   |
  |  hosts.yaml          |            +----|-------|---+     +----|-------|---+
- +----------------------+               BLE/serial/...         BLE/serial/...
+ +----------------------+               radio/serial/...       radio/serial/...
                                          r1      r3              r2      r4
 ```
 
@@ -153,6 +158,29 @@ A `unit` is:
 
 `systemd/roost-agent.service` is a template for running the agent as a
 service.
+
+## Fitting your constraints
+
+roost does not measure anything on a host. You tell it what each host can
+take, using three settings:
+
+- **`capacity`** (hosts file): how many units the host runs at once. Set it to
+  the count of whatever runs out first there: 4 on a board whose radio holds
+  four links, 2 on a machine with two free serial ports, 30 on a server that
+  is only limited by CPU. Each unit takes one slot, and a full host is
+  refused rather than overloaded.
+- **`types`** (hosts file): which unit types may be placed on the host, so
+  units that need a GPU or a particular adapter only land where one exists.
+- **unit types** (each host's own agent config): the same type name can map to
+  a different command, environment or timeouts on different hosts, and a host
+  simply omits the types it cannot run.
+
+```yaml
+hosts:
+  - {name: sbc-01, host: 10.0.0.11, capacity: 4, types: [rover]}
+  - {name: sbc-02, host: 10.0.0.12, capacity: 2, types: [rover]}
+  - {name: gpu-01, host: 10.0.0.20, capacity: 12, types: [rover, vision]}
+```
 
 ## Manager
 

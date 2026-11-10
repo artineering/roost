@@ -1,0 +1,5 @@
+# Manager config for the no-hardware demo: two agents on this machine.
+# The token comes from the ROOST_TOKEN environment variable (demo.py sets it).
+hosts:
+  - {name: host-a, host: 127.0.0.1, port: 18181, capacity: 2}
+  - {name: host-b, host: 127.0.0.1, port: 18182, capacity: 2}

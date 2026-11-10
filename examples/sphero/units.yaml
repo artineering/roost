@@ -1,0 +1,19 @@
+# Agent config reproducing the Sphero deployment roost was extracted from.
+#
+# One unit = one Sphero = one `sphero_instance_websocket_server.py` process,
+# which launches that robot's three controller nodes itself. The DDS settings
+# (ROS_DOMAIN_ID, RMW_IMPLEMENTATION, CYCLONEDDS_URI) are set once per host in
+# the agent's own environment -- see systemd/roost-agent.service -- and every
+# unit inherits them.
+units:
+  sphero:
+    # The server reads argv[3] as "true"/"1"/"yes" => on, anything else => off,
+    # so always passing "true" or "false" matches its optional third argument.
+    command: [ros2, run, sphero_instance_controller,
+              sphero_instance_websocket_server.py,
+              "{name}", "{port}", "{external_localization}"]
+    params:
+      port: {type: int, required: true}              # allocated by the manager
+      external_localization: {type: bool, default: false}
+    startup_grace_s: 2
+    term_timeout_s: 10        # time to shut down cleanly and drop the BLE link

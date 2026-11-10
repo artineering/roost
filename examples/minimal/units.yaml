@@ -1,0 +1,9 @@
+# Agent config for the no-hardware demo. Paths are relative to the agent's
+# working directory; demo.py starts the agents from this directory.
+units:
+  demo:
+    command: [python3, controller.py, "{name}", "{interval}"]
+    params:
+      interval: {type: float, default: 1.0}
+    startup_grace_s: 0.5
+    term_timeout_s: 5

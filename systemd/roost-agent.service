@@ -1,0 +1,48 @@
+# systemd unit template for the roost agent.
+#
+# Install on each host, filling in the <PLACEHOLDERS>:
+#   1. Put the unit types in /etc/roost/units.yaml.
+#   2. Put the secrets in /etc/roost/agent.env (chmod 600, owned by root):
+#          ROOST_TOKEN=<SHARED_TOKEN>
+#   3. sudo cp roost-agent.service /etc/systemd/system/
+#   4. sudo systemctl daemon-reload && sudo systemctl enable --now roost-agent
+#   5. systemctl status roost-agent      (logs: journalctl -u roost-agent -f)
+
+[Unit]
+Description=roost agent (launches robot controllers on this host)
+After=network-online.target
+Wants=network-online.target
+# For BLE robots also add:  After=bluetooth.target
+
+[Service]
+Type=simple
+User=<RUN_USER>
+
+Environment=ROOST_CONFIG=/etc/roost/units.yaml
+Environment=ROOST_HOST=<LAN_IP>
+Environment=ROOST_PORT=8181
+Environment=ROOST_LOG_DIR=/var/log/roost
+EnvironmentFile=/etc/roost/agent.env
+
+# Anything set here is inherited by every unit, e.g. for ROS 2:
+#Environment=ROS_DOMAIN_ID=<ROS_DOMAIN_ID>
+#Environment=RMW_IMPLEMENTATION=rmw_cyclonedds_cpp
+
+# Creates /var/log/roost, owned by <RUN_USER>.
+LogsDirectory=roost
+
+ExecStart=<VENV>/bin/roost-agent
+# If the unit commands need a sourced environment (e.g. `ros2 run ...`):
+#ExecStart=/bin/bash -c 'source /opt/ros/<DISTRO>/setup.bash && source <WORKSPACE>/install/setup.bash && exec <VENV>/bin/roost-agent'
+
+Restart=on-failure
+RestartSec=3
+# SIGTERM goes to the agent only, which tears its units down in parallel
+# (SIGTERM, then SIGKILL after each type's term_timeout_s). Keep
+# TimeoutStopSec above the largest term_timeout_s; whatever is left after it
+# is killed by systemd.
+KillMode=mixed
+TimeoutStopSec=30
+
+[Install]
+WantedBy=multi-user.target
